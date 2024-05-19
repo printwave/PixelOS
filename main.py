@@ -110,6 +110,10 @@ def get(script_name, var_name):
         print(f"Error occurred while getting variable '{var_name}' from '{script_name}': {e}")
         return None
 streamer = get("settings.py","streamer_mode" )
+with open("settings.txt", "a") as f:
+    f.write("streamer mode:")
+with open("settings.txt", "a") as f:
+    f.write(str(streamer))
 
 
 # Main loop
@@ -137,10 +141,6 @@ while True:
        screen.fill((30, 30, 30))
        button_img(screen, 0, 0, setting_img, "settings.py")
        pygame.display.flip()
-    with open("settings.txt", "a") as f:
-        f.write("streamer mode:")
-    with open("settings.txt", "a") as f:
-        f.write(str(streamer))
             
 
 
