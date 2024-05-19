@@ -1,0 +1,5 @@
+Version 1.2
+
+press Ctrl + s: to shutdown
+it will make a file called settings.txt it will have the settings in text
+
