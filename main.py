@@ -20,9 +20,9 @@ imgdelhalf = pygame.image.load("imgdelhalf.png")
 imgdelfull = pygame.image.load("imgdelfull.png")
 
 # Set up the initial state
-startup = False
-first_time = False
-home = True
+startup = True
+first_time = True
+home = False
 settings = False
 result = ""
 trash = trash_amount
