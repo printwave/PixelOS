@@ -5,6 +5,7 @@ import time
 from buttons import *
 from text import *
 import subprocess
+from image_del import trash_amount
 
 # Initialize pygame
 pygame.init()
@@ -13,13 +14,19 @@ clock = pygame.time.Clock()
 icon = pygame.image.load("icon.png")
 logo = pygame.image.load("pixelOS.png")
 setting_img = pygame.image.load("settings.png")
+camra_img = pygame.image.load("camra.png")
+imgdel = pygame.image.load("imgdel.png")
+imgdelhalf = pygame.image.load("imgdelhalf.png")
+imgdelfull = pygame.image.load("imgdelfull.png")
 
 # Set up the initial state
-startup = True
-first_time = True
-home = False
+startup = False
+first_time = False
+home = True
 settings = False
 result = ""
+trash = trash_amount
+
 
 # Set random values
 t1 = random.randrange(1, 11)
@@ -109,11 +116,6 @@ def get(script_name, var_name):
     except Exception as e:
         print(f"Error occurred while getting variable '{var_name}' from '{script_name}': {e}")
         return None
-streamer = get("settings.py","streamer_mode" )
-with open("settings.txt", "a") as f:
-    f.write("streamer mode:")
-with open("settings.txt", "a") as f:
-    f.write(str(streamer))
 
 
 # Main loop
@@ -138,9 +140,25 @@ while True:
         startup, home = handle_startup(first_time)
 
     if home:
-       screen.fill((30, 30, 30))
-       button_img(screen, 0, 0, setting_img, "settings.py")
-       pygame.display.flip()
+        screen.fill((30, 30, 30))
+        button_img(screen, 0, 0, setting_img, "settings.py")
+        button_img(screen, 300, 0, camra_img, "camra.py")
+        if trash < 50 and trash > 0:
+            button_img(screen, 600, 0, imgdel, "image_del.py")
+        elif trash > 50 and trash < 100:
+            button_img(screen, 600, 0, imgdelhalf, "image_del.py")
+        elif trash > 100:
+            button_img(screen, 600, 0, imgdelfull, "image_del.py")
+
+
+        rect_x = 0
+        rect_y = 900 - 75 # Adjusted to bottom of the screen
+        rect_width = 1200  # Explicitly setting the width
+        rect_height = 75   # Explicitly setting the height
+        pygame.draw.rect(screen, (255, 255, 255), (rect_x, rect_y, rect_width, rect_height))
+        pygame.display.flip()
+    
+
             
 
 

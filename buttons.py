@@ -1,6 +1,6 @@
 import pygame
-import sys
 
+# Button class
 class Button:
     def __init__(self, x, y, text, text_color=(0, 0, 0), bg_color=None, rounded_corners=False):
         self.text = text
@@ -33,12 +33,3 @@ class Button:
             if self.rect.collidepoint(event.pos):
                 return True
         return False
-
-    def set_text(self, text):
-        self.text = text
-        self.text_surface = self.font.render(text, True, self.text_color)
-        self.text_rect = self.text_surface.get_rect(center=self.rect.center)
-
-    def get_text(self):
-        return self.text
-
