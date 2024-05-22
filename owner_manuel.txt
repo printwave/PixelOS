@@ -1,5 +1,15 @@
 Version 1.2
 
-press Ctrl + s: to shutdown
+press Ctrl + Q: to shutdown
 it will make a file called settings.txt it will have the settings in text
+press Ctrl +  W to turn on while in shutdown mode
+
+MyWifi0987: password1
+MyWifi9827: password2
+MyWifi0567: password3
+MyWifi-guest: password4
+esp32wfiduyusizea : password5
+Walmart-guest: password6
+Target-guest: password7
+Xfinity: password8
 

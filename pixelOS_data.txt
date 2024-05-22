@@ -1,0 +1,3 @@
+MyWifi9827 : password2
+MyWifi2166 : password5
+esp32wfiduyusizea : password5

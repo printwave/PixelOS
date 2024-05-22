@@ -2,10 +2,9 @@ import pygame
 import sys
 import random
 import time
-from buttons import *
 from text import *
-import subprocess
 from image_del import trash_amount
+import subprocess
 
 # Initialize pygame
 pygame.init()
@@ -18,15 +17,30 @@ camra_img = pygame.image.load("camra.png")
 imgdel = pygame.image.load("imgdel.png")
 imgdelhalf = pygame.image.load("imgdelhalf.png")
 imgdelfull = pygame.image.load("imgdelfull.png")
+album_img = pygame.image.load("album.png")
+media_img = pygame.image.load("media.png")
+wifi_img = pygame.image.load("wifi.png")
+timer_img = pygame.image.load("timer.png")
+internet_img = pygame.image.load("internet.png")
 
 # Set up the initial state
-startup = True
-first_time = True
+shutdown = False
+startup = False
+first_time = False
 home = False
 settings = False
 result = ""
 trash = trash_amount
+h = True
 
+if h == False:
+    startup = True
+    first_time = True
+    home = False
+elif h == True:
+    home = True
+    startup = False
+    first_time = False
 
 # Set random values
 t1 = random.randrange(1, 11)
@@ -69,6 +83,22 @@ def handle_startup(first_time):
             "finished"
         ], logo, [20, t9, t2])
     return False, True
+def check_data():
+    try:
+        with open("pixelOS_data.txt", "r") as file:
+            lines = file.readlines()
+            for line in lines:
+                key, value = line.strip().split(" : ")
+                if key.strip() == "esp32wfiduyusizea" and value.strip() == "password5":
+                    return True
+            return False
+    except FileNotFoundError:
+        print("File not found.")
+    except ValueError:
+        print("Invalid format in file.")
+
+# Check data
+
 
 def display_text_sequence(texts, image, delays):
     for i, text_msg in enumerate(texts):
@@ -78,25 +108,20 @@ def display_text_sequence(texts, image, delays):
         pygame.display.flip()
         delay = delays[i] if i < len(delays) else 2
         time.sleep(delay)
+
 def run(script_name):
     global result
     try:
         result = subprocess.run(['python', script_name], check=True)
-        print("Script executed successfully!")
     except subprocess.CalledProcessError as e:
-        print("Error executing script:", e)
         return result
+
 def button_img(screen, x, y, image, file):
     rect = image.get_rect()
     rect.topleft = (x, y)
     screen.blit(image, rect)
+    return rect, file
 
-    mouse_pos = pygame.mouse.get_pos()
-    clicked = pygame.mouse.get_pressed()[0]
-
-    if rect.collidepoint(mouse_pos):
-        if clicked:
-            run(file)
 def get(script_name, var_name):
     try:
         with open(script_name, 'r') as f:
@@ -117,51 +142,62 @@ def get(script_name, var_name):
         print(f"Error occurred while getting variable '{var_name}' from '{script_name}': {e}")
         return None
 
+# Initialize buttons list
+buttons = []
+if check_data():
+    print("The specified data was found in the file.")
+    run("esp32.py")
 
 # Main loop
 while True:
-    button_rect = None
+    mouse_pos = pygame.mouse.get_pos()
+    clicked = pygame.mouse.get_pressed()[0]
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if (event.mod & pygame.KMOD_CTRL) and (event.key == pygame.K_s):
-                pygame.quit()
-                sys.exit()
-
+            if (event.mod & pygame.KMOD_CTRL) and (event.key == pygame.K_q) and not shutdown:
+                shutdown = True
 
     if first_time and startup:
         first_time, home = handle_startup(first_time)
         startup = False
 
-    if startup and not first_time:
-        startup, home = handle_startup(first_time)
-
     if home:
+        home = False
         screen.fill((30, 30, 30))
-        button_img(screen, 0, 0, setting_img, "settings.py")
-        button_img(screen, 300, 0, camra_img, "camra.py")
-        if trash < 50 and trash > 0:
-            button_img(screen, 600, 0, imgdel, "image_del.py")
-        elif trash > 50 and trash < 100:
-            button_img(screen, 600, 0, imgdelhalf, "image_del.py")
-        elif trash > 100:
-            button_img(screen, 600, 0, imgdelfull, "image_del.py")
-
-
         rect_x = 0
-        rect_y = 900 - 75 # Adjusted to bottom of the screen
+        rect_y = 900 - 75  # Adjusted to bottom of the screen
         rect_width = 1200  # Explicitly setting the width
-        rect_height = 75   # Explicitly setting the height
+        rect_height = 75  # Explicitly setting the height
         pygame.draw.rect(screen, (255, 255, 255), (rect_x, rect_y, rect_width, rect_height))
+        buttons = [
+            button_img(screen, 0, 0, setting_img, "settings.py"),
+            button_img(screen, 300, 0, camra_img, "camra.py"),
+            button_img(screen, 600, 0, album_img, "album.py"),
+            button_img(screen, 900, 0, media_img, "music_player.py"),
+            button_img(screen, 1100, 800 ,wifi_img, "wifi.py"),
+            button_img(screen, 0, 300, timer_img, "clock.py"),
+            button_img(screen, 300, 300, internet_img, "internet.py")
+        ]
+        if trash < 50 and trash > 0:
+            buttons.append(button_img(screen, 600, 0, imgdel, "image_del.py"))
+        elif trash > 50 and trash < 100:
+            buttons.append(button_img(screen, 600, 0, imgdelhalf, "image_del.py"))
+        elif trash > 100:
+            buttons.append(button_img(screen, 600, 0, imgdelfull, "image_del.py"))
         pygame.display.flip()
-    
 
-            
+        
+    if shutdown:
+        run("shutdown.py")
+        time.sleep(1)
+        shutdown = False
 
-
-
+    for button_rect, script_name in buttons:
+        if button_rect.collidepoint(mouse_pos) and clicked:
+            run(script_name)
 
     clock.tick(30)
