@@ -14,62 +14,28 @@ class InputBox:
 
     def handle_event(self, event):
         if event.type == pl.MOUSEBUTTONDOWN:
-            # If the user clicked on the input_box rect.
             if self.rect.collidepoint(event.pos):
-                # Toggle the active variable.
                 self.active = not self.active
             else:
                 self.active = False
-            # Change the current color of the input box.
             self.color = self.color_active if self.active else self.color_inactive
         if event.type == pl.KEYDOWN:
             if self.active:
-                if event.key == pl.K_RETURN:
-                    print(self.text)
+                if event.key == pygame.K_RETURN:
                     self.text = ''
-                elif event.key == pl.K_BACKSPACE:
+                elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
                     self.text += event.unicode
-                # Re-render the text.
                 self.txt_surface = self.font.render(self.text, True, self.color)
 
     def update(self):
-        # Resize the box if the text is too long.
-        width = max(200, self.txt_surface.get_width()+10)
+        width = max(200, self.txt_surface.get_width() + 10)
         self.rect.w = width
 
     def draw(self, screen):
-        # Blit the text.
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
-        # Blit the rect.
+        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
-
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((640, 480))
-    pygame.display.set_caption("Pygame Input Box Example")
-    clock = pygame.time.Clock()
-    input_box = InputBox(100, 100, 140, 32)
-    done = False
-
-    while not done:
-        for event in pygame.event.get():
-            if event.type == pl.QUIT:
-                done = True
-            input_box.handle_event(event)
-
-        input_box.update()
-
-        screen.fill((30, 30, 30))
-        input_box.draw(screen)
-
-        pygame.display.flip()
-        clock.tick(30)
-
-    pygame.quit()
-
-
-if __name__ == "__main__":
-    main()
+    def get_text(self):
+        return self.text

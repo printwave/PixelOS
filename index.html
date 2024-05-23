@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Files</title>
+</head>
+<body>
+    <h1>Download Files</h1>
+    <p>Click the button below to download all files (except index.html) in this directory:</p>
+    <button onclick="downloadFiles()">Download All Files</button>
+
+    <script>
+        function downloadFiles() {
+            // List of file names in the directory
+            var files = ["album.png","album.py","beep.wav","box.py","buttons.py","camra.png","camra.py","clock.py","esp32.py","icon.png","imagedel.py","imgdel.png","imgdelhalf.png","imgdelfull.png","internet.py","main.py","media.png","music_player.py","off.png","on.png","owner_manuel.txt","pixelnet.py","pixelos_data_websites.txt","pixelOS_data.txt","pixelOS.png","run.py","settings.png","settings.py","shutdown.png","shutdown.py","moonbeams.mp3","streamer.png","text.py","timer.png","wifi_off.png","wifi.png","wifi.py","wifichecker.py"]
+
+            // Create a hidden anchor element to trigger the downloads
+            var anchor = document.createElement('a');
+            anchor.style.display = 'none'
+            document.body.appendChild(anchor);
+
+            // Iterate through the files and create download links
+            files.forEach(function(filename) {
+                if (filename !== 'index.html') {
+                    var link = document.createElement('a');
+                    link.setAttribute('href', filename);
+                    link.setAttribute('download', filename);
+                    anchor.appendChild(link);
+                    link.click();
+                }
+            });
+
+            // Clean up anchor element
+            document.body.removeChild(anchor);
+        }
+    </script>
+</body>
+</html>
